@@ -1,6 +1,7 @@
 package com.example.test_spring_JPA_2.service;
 import com.example.test_spring_JPA_2.model.Wallet;
 import com.example.test_spring_JPA_2.repository.WalletRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ public class WalletService {
         this.walletRepository = walletRepository;
     }
 
+//    @Transactional
     public Wallet createWallet(String name, Double amount, Long userId) {
         Wallet wallet = new Wallet();
         wallet.setName(name);
@@ -24,13 +26,15 @@ public class WalletService {
         return walletRepository.save(wallet);
     }
 
-    public Wallet updateWallet(Long walletId, String name, Double amount) {
-        Optional<Wallet> optionalWallet = walletRepository.findById(walletId);
-        return optionalWallet.map(wallet -> {
+    public Wallet updateWallet(Long id, String name, Double amount) {
+        Wallet wallet = walletRepository.findById(id).orElse(null);
+        if (wallet != null) {
             wallet.setName(name);
             wallet.setAmount(amount);
             return walletRepository.save(wallet);
-        }).orElse(null);
+        } else {
+            return null; // Wallet not found
+        }
     }
 
     @Transactional
@@ -53,7 +57,10 @@ public class WalletService {
     }
 
     public Wallet findById(Long id) {
-        return walletRepository.findDataById(id);
+        return walletRepository.findById(id).orElse(null);
     }
 
+//    public List<Wallet> getAllWalletsSortedByUpdatedAtDesc() {
+//        return walletRepository.findAll(Sort.by(Sort.Direction.DESC, "updated_at"));
+//    }
 }
