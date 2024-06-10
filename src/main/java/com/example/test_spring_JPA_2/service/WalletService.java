@@ -1,7 +1,6 @@
 package com.example.test_spring_JPA_2.service;
 import com.example.test_spring_JPA_2.model.Wallet;
 import com.example.test_spring_JPA_2.repository.WalletRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,21 +10,27 @@ import java.util.Optional;
 @Service
 public class WalletService {
 
-//    @Autowired
     private WalletRepository walletRepository;
 
     public WalletService(WalletRepository walletRepository) {
         this.walletRepository = walletRepository;
     }
 
-    public void createWallet(Long userId, String name, Double amount) {
+    public Wallet createWallet(String name, Double amount, Long userId) {
         Wallet wallet = new Wallet();
         wallet.setName(name);
         wallet.setAmount(amount);
         wallet.setUserId(userId);
-        wallet.setIsMain(false);
+        return walletRepository.save(wallet);
+    }
 
-        walletRepository.save(wallet);
+    public Wallet updateWallet(Long walletId, String name, Double amount) {
+        Optional<Wallet> optionalWallet = walletRepository.findById(walletId);
+        return optionalWallet.map(wallet -> {
+            wallet.setName(name);
+            wallet.setAmount(amount);
+            return walletRepository.save(wallet);
+        }).orElse(null);
     }
 
     @Transactional
@@ -45,6 +50,10 @@ public class WalletService {
 
     public Iterable<Wallet> getAllWallets() {
         return walletRepository.findAll();
+    }
+
+    public Wallet findById(Long id) {
+        return walletRepository.findDataById(id);
     }
 
 }
