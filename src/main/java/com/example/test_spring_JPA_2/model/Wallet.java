@@ -1,5 +1,4 @@
 package com.example.test_spring_JPA_2.model;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -13,7 +12,6 @@ public class Wallet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JsonManagedReference
     private List<Pocket> pockets;
 
     @NotBlank(message = "Wallet name cannot be empty")
@@ -47,7 +45,6 @@ public class Wallet {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

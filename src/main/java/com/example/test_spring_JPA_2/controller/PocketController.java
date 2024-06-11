@@ -52,7 +52,19 @@ public class PocketController {
         try {
             Pocket pocket = pocketService.updatePocket(id, updatedPocketDTO);
             PocketDTO newUpdatedPocketDTO = pocketService.convertToDTO(pocket);
-            CustomResponse<PocketDTO> response = new CustomResponse<>(HttpStatus.OK, "Success", "Pocket updated successfully", newUpdatedPocketDTO);
+            CustomResponse<PocketDTO> response = new CustomResponse<>(HttpStatus.OK, "Success", newUpdatedPocketDTO.getName() + " Pocket updated successfully", newUpdatedPocketDTO);
+            return response.toResponseEntity();
+        } catch (IllegalArgumentException e) {
+            CustomResponse<PocketDTO> response = new CustomResponse<>(HttpStatus.NOT_FOUND, "Error", e.getMessage(), null);
+            return response.toResponseEntity();
+        }
+    }
+
+    @DeleteMapping("/pocket/{id}")
+    public ResponseEntity<CustomResponse<PocketDTO>> deletePocket(@PathVariable Long id) {
+        try {
+            PocketDTO deletedPocket = pocketService.deletePocket(id);
+            CustomResponse<PocketDTO> response = new CustomResponse<>(HttpStatus.OK, "Success", deletedPocket.getName() + " Pocket deleted successfully", deletedPocket);
             return response.toResponseEntity();
         } catch (IllegalArgumentException e) {
             CustomResponse<PocketDTO> response = new CustomResponse<>(HttpStatus.NOT_FOUND, "Error", e.getMessage(), null);

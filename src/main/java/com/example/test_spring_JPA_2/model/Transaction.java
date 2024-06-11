@@ -28,13 +28,9 @@ public class Transaction {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Constructors, getters, and setters
-
-    // Constructor
     public Transaction() {
     }
 
-    // Getters and setters
     public Long getId() {
         return id;
     }
