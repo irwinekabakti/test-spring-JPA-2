@@ -3,17 +3,12 @@ import com.example.test_spring_JPA_2.model.Wallet;
 import com.example.test_spring_JPA_2.model.Transaction;
 import com.example.test_spring_JPA_2.repository.WalletRepository;
 import com.example.test_spring_JPA_2.repository.TransactionRepository;
-//import jakarta.transaction.Transaction;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import org.springframework.data.domain.Sort;
-import org.springframework.transaction.annotation.Transactional;
+import java.util.*;
 
 @Service
 public class WalletService {
@@ -33,23 +28,6 @@ public class WalletService {
         wallet.setUserId(userId);
         return walletRepository.save(wallet);
     }
-
-    /*
-    @Transactional
-    public void setMainWallet(Long userId, Long walletId) {
-        Optional<Wallet> currentMainWallet = walletRepository.findByUserIdAndIsMainTrue(userId);
-        currentMainWallet.ifPresent(wallet -> {
-//            wallet.setIsMain(false);
-            walletRepository.save(wallet);
-        });
-
-        Wallet newMainWallet = walletRepository.findById(walletId)
-                .orElseThrow(() -> new RuntimeException("Wallet not found"));
-
-//        newMainWallet.setIsMain(true);
-        walletRepository.save(newMainWallet);
-    }
-    */
 
     public Iterable<Wallet> getAllWallets() {
         return walletRepository.findAll();
@@ -80,11 +58,6 @@ public class WalletService {
             return null;
         }
     }
-
-//    private int getNumberOfExpensePockets(Long walletId) {
-//        List<ExpensePocket> expensePockets = expensePocketRepository.findByWalletId(walletId);
-//        return expensePockets.size();
-//    }
 
     public Map<String, Map<String, String>> getWalletSummary(Long walletId) {
         Map<String, BigDecimal> incomeSummary = new HashMap<>();
@@ -141,15 +114,11 @@ public class WalletService {
         return totalExpenses;
     }
 
-    /*
-    private int getNumberOfExpensePockets(Long walletId) {
-        List<ExpensePocket> expensePockets = expensePocketRepository.findByWalletId(walletId);
-        return expensePockets.size();
+    public Page<Transaction> getLatestTransactions(int page, int size) {
+        return transactionRepository.findLatestTransactions(PageRequest.of(page, size));
     }
 
-    private int getNumberOfGoals(Long walletId) {
-        List<Goal> goals = goalRepository.findByWalletId(walletId);
-        return goals.size();
+    public Page<Transaction> getTransactionsWithinDateRange(LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
+        return transactionRepository.findTransactionsWithinDateRange(startDate, endDate, PageRequest.of(page, size));
     }
-    */
 }
