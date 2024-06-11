@@ -8,8 +8,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import java.math.BigDecimal;
+import java.util.Map;
+import java.util.Optional;
+
 @RestController
-@RequestMapping("/api/v1/wallets")
+@RequestMapping("/api/v1")
 @Validated
 public class WalletController {
     private WalletService walletService;
@@ -17,7 +21,7 @@ public class WalletController {
         this.walletService = walletService;
     }
 
-    @PostMapping
+    @PostMapping("/wallets")
     public ResponseEntity<CustomResponse<Wallet>> createWallet(@Valid @RequestBody Wallet wallet) {
         Wallet postWallet = walletService.createWallet(wallet.getName(), wallet.getAmount(), wallet.getUserId());
         if (postWallet != null) {
@@ -29,14 +33,14 @@ public class WalletController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/wallets")
     public ResponseEntity<CustomResponse<Iterable<Wallet>>> getAllWallets() {
         Iterable<Wallet> wallets = walletService.getAllWallets();
         CustomResponse<Iterable<Wallet>> response = new CustomResponse<>(HttpStatus.OK, "Success", "All wallets retrieved successfully", wallets);
         return response.toResponseEntity();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/wallet/{id}")
     public ResponseEntity<CustomResponse<Wallet>> getWalletById(@PathVariable Long id) {
         Wallet wallet = walletService.findById(id);
         if (wallet != null) {
@@ -49,7 +53,7 @@ public class WalletController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/wallet/{id}")
     public ResponseEntity<CustomResponse<Wallet>> updateWallet(@PathVariable Long id, @Valid @RequestBody Wallet wallet) {
         Wallet updatedWallet = walletService.updateWallet(id, wallet.getName(), wallet.getAmount());
         if (updatedWallet != null) {
@@ -62,7 +66,7 @@ public class WalletController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/wallet/{id}")
     public ResponseEntity<CustomResponse<Wallet>> deleteWallet(@PathVariable Long id) {
         Wallet deletedWallet = walletService.deleteById(id);
         if (deletedWallet != null) {
@@ -72,5 +76,22 @@ public class WalletController {
             CustomResponse<Wallet> response = new CustomResponse<>(HttpStatus.NOT_FOUND, "error", "Wallet not found", null);
             return response.toResponseEntity();
         }
+    }
+
+    @GetMapping("/wallet/{id}/summary")
+    public ResponseEntity<CustomResponse<Map<String, Map<String, String>>>> getWalletSummary(@PathVariable Long id) {
+        Optional<Wallet> walletOptional = walletService.getWalletById(id);
+
+        if (walletOptional.isEmpty()) {
+            CustomResponse<Map<String, Map<String, String>>> response = new CustomResponse<>(HttpStatus.NOT_FOUND, "Wallet not found");
+            return response.toResponseEntity();
+        }
+
+        Wallet wallet = walletOptional.get();
+        Map<String, Map<String, String>> summary = walletService.getWalletSummary(id);
+        String getMessage = wallet.getName() + " Wallet " + id + " summary retrieved successfully";
+
+        CustomResponse<Map<String, Map<String, String>>> response = new CustomResponse<>(HttpStatus.OK, "OK", getMessage, summary);
+        return response.toResponseEntity();
     }
 }
