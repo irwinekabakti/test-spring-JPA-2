@@ -1,25 +1,27 @@
-package com.example.test_spring_JPA_2.model;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
+package com.example.test_spring_JPA_2.dto;
 
-@Entity
-public class Pocket {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class PocketDTO {
     private Long id;
-
     private String name;
     private String emoji;
     private String description;
     private double budget;
     private double spent;
+    private Long walletId;
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Wallet.class)
-    @JoinColumn(name = "wallet_id", nullable = false)
-//    @JsonBackReference
-    private Wallet wallet;
+    // Constructors, Getters and Setters
+    public PocketDTO() {}
 
-    // Getters and setters
+    public PocketDTO(Long id, String name, String emoji, String description, double budget, double spent, Long walletId) {
+        this.id = id;
+        this.name = name;
+        this.emoji = emoji;
+        this.description = description;
+        this.budget = budget;
+        this.spent = spent;
+        this.walletId = walletId;
+    }
+
     public Long getId() {
         return id;
     }
@@ -68,11 +70,11 @@ public class Pocket {
         this.spent = spent;
     }
 
-    public Wallet getWallet() {
-        return wallet;
+    public Long getWalletId() {
+        return walletId;
     }
 
-    public void setWallet(Wallet wallet) {
-        this.wallet = wallet;
+    public void setWalletId(Long walletId) {
+        this.walletId = walletId;
     }
 }
