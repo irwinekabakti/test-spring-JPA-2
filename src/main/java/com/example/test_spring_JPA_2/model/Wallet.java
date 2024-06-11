@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Wallet {
@@ -10,6 +11,8 @@ public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Pocket> pockets;
 
     @NotBlank(message = "Wallet name cannot be empty")
     private String name;
@@ -105,5 +108,13 @@ public class Wallet {
 
     public void setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public List<Pocket> getPockets() {
+        return pockets;
+    }
+
+    public void setPockets(List<Pocket> pockets) {
+        this.pockets = pockets;
     }
 }

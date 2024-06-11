@@ -97,7 +97,7 @@ public class WalletController {
         return response.toResponseEntity();
     }
 
-    @GetMapping("/transactions")
+    @GetMapping("/wallets/transactions")
     public ResponseEntity<CustomResponse<Map<String, Object>>> getTransactions(
             @RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
