@@ -1,5 +1,4 @@
 package com.example.test_spring_JPA_2.model;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,10 +15,8 @@ public class Pocket {
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Wallet.class)
     @JoinColumn(name = "wallet_id", nullable = false)
-//    @JsonBackReference
     private Wallet wallet;
 
-    // Getters and setters
     public Long getId() {
         return id;
     }

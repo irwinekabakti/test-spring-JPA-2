@@ -4,7 +4,6 @@ import com.example.test_spring_JPA_2.model.Pocket;
 import com.example.test_spring_JPA_2.model.Wallet;
 import com.example.test_spring_JPA_2.repository.PocketRepository;
 import com.example.test_spring_JPA_2.repository.WalletRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +14,6 @@ public class PocketService {
     private final PocketRepository pocketRepository;
     private final WalletRepository walletRepository;
 
-    //    @Autowired
     public PocketService(PocketRepository pocketRepository, WalletRepository walletRepository) {
         this.pocketRepository = pocketRepository;
         this.walletRepository = walletRepository;
@@ -24,32 +22,6 @@ public class PocketService {
     public Pocket createPocket(Pocket pocket) {
         return pocketRepository.save(pocket);
     }
-
-    /*
-    public List<Pocket> getAllPockets() {
-        return pocketRepository.findAll();
-    }
-
-    public Optional<Pocket> getPocketById(Long id) {
-        return pocketRepository.findById(id);
-    }
-
-    public Pocket updatePocket(Long id, Pocket updatedPocket) {
-        Optional<Pocket> optionalPocket = pocketRepository.findById(id);
-        if (optionalPocket.isPresent()) {
-            Pocket existingPocket = optionalPocket.get();
-            existingPocket.setName(updatedPocket.getName());
-            existingPocket.setEmoji(updatedPocket.getEmoji());
-            existingPocket.setDescription(updatedPocket.getDescription());
-            existingPocket.setBudget(updatedPocket.getBudget());
-            existingPocket.setSpent(updatedPocket.getSpent());
-            existingPocket.setWallet(updatedPocket.getWallet());
-            return pocketRepository.save(existingPocket);
-        } else {
-            throw new IllegalArgumentException("Pocket with id " + id + " not found");
-        }
-    }
-    */
 
     public List<PocketDTO> getAllPockets() {
         List<Pocket> pockets = pocketRepository.findAll();
@@ -84,6 +56,13 @@ public class PocketService {
         } else {
             throw new IllegalArgumentException("Pocket with id " + id + " not found");
         }
+    }
+
+    public PocketDTO deletePocket(Long id) {
+        Pocket pocket = pocketRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pocket with id " + id + " not found"));
+        pocketRepository.deleteById(id);
+        return convertToDTO(pocket);
     }
 
     public PocketDTO convertToDTO(Pocket pocket) {
