@@ -19,8 +19,20 @@ public class PocketService {
         this.walletRepository = walletRepository;
     }
 
-    public Pocket createPocket(Pocket pocket) {
-        return pocketRepository.save(pocket);
+    public PocketDTO createPocket(PocketDTO pocketDTO) {
+        Wallet wallet = walletRepository.findById(pocketDTO.getWalletId())
+                .orElseThrow(() -> new IllegalArgumentException("Wallet with id " + pocketDTO.getWalletId() + " not found"));
+
+        Pocket pocket = new Pocket();
+        pocket.setName(pocketDTO.getName());
+        pocket.setEmoji(pocketDTO.getEmoji());
+        pocket.setDescription(pocketDTO.getDescription());
+        pocket.setBudget(pocketDTO.getBudget());
+        pocket.setSpent(pocketDTO.getSpent());
+        pocket.setWallet(wallet);
+
+        Pocket savedPocket = pocketRepository.save(pocket);
+        return convertToDTO(savedPocket);
     }
 
     public List<PocketDTO> getAllPockets() {
