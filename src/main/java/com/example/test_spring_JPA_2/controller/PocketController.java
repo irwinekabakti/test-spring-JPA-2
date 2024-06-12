@@ -21,10 +21,9 @@ public class PocketController {
     }
 
     @PostMapping("/pockets")
-    public ResponseEntity<CustomResponse<Pocket>> createPocket(@RequestBody Pocket pocket) {
-        Pocket createdPocket = pocketService.createPocket(pocket);
-        CustomResponse<Pocket> response = new CustomResponse<>(HttpStatus.CREATED, "Success", "Pocket created successfully", createdPocket);
-
+    public ResponseEntity<CustomResponse<PocketDTO>> createPocket(@RequestBody PocketDTO pocketDTO) {
+        PocketDTO createdPocketDTO = pocketService.createPocket(pocketDTO);
+        CustomResponse<PocketDTO> response = new CustomResponse<>(HttpStatus.CREATED, "Success", "Pocket created successfully", createdPocketDTO);
         return response.toResponseEntity();
     }
 
