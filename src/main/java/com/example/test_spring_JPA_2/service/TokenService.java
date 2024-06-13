@@ -23,8 +23,6 @@ public class TokenService {
 
     public String generateJwt(Authentication auth){
         Instant now = Instant.now();
-
-        // Set the expiration time to 1 hour from now
         Instant timeExpiresAt = now.plus(1, ChronoUnit.HOURS);
 
         String scope = auth.getAuthorities().stream()

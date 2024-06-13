@@ -35,21 +35,55 @@ public class AuthenticationService {
     @Autowired
     private TokenService tokenService;
 
+    /*
     public Users registerUser(String username, String password){
 
         String encodedPassword = passwordEncoder.encode(password);
-        Roles userRoles = rolesRepository.findByAuthority("USER").get();
+        var userRoles = rolesRepository.findByAuthority("USER");
 
         Set<Roles> authorities = new HashSet<>();
 
-        authorities.add(userRoles);
+        if (userRoles.isEmpty()) {
+            var defaultRole = new Roles("USER");
+            authorities.add(defaultRole);
+        } else {
+            authorities.add(userRoles.get());
+        }
+
+        return usersRepository.save(new Users(0, username, encodedPassword, authorities));
+    }
+     */
+
+    public Users registerUser(String username, String password) {
+        String encodedPassword = passwordEncoder.encode(password);
+        Set<Roles> authorities = new HashSet<>();
+
+        if ("admin".equalsIgnoreCase(username)) {
+            var adminRole = rolesRepository.findByAuthority("ADMIN");
+            if (adminRole.isPresent()) {
+                authorities.add(adminRole.get());
+            } else {
+                var defaultAdminRole = new Roles("ADMIN");
+                rolesRepository.save(defaultAdminRole);
+                authorities.add(defaultAdminRole);
+            }
+        } else {
+            var userRole = rolesRepository.findByAuthority("USER");
+            if (userRole.isPresent()) {
+                authorities.add(userRole.get());
+            } else {
+                var defaultUserRole = new Roles("USER");
+                rolesRepository.save(defaultUserRole);
+                authorities.add(defaultUserRole);
+            }
+        }
 
         return usersRepository.save(new Users(0, username, encodedPassword, authorities));
     }
 
     public LoginResponseDTO loginUser(String username, String password){
 
-        try{
+        try {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
             );
