@@ -9,6 +9,6 @@ public class UsersController {
 
     @GetMapping("/")
     public String getUser(){
-        return "User access level";
+        return "User login success";
     }
 }

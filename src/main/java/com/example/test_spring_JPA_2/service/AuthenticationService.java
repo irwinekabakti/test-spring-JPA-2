@@ -58,7 +58,7 @@ public class AuthenticationService {
         String encodedPassword = passwordEncoder.encode(password);
         Set<Roles> authorities = new HashSet<>();
 
-        if ("admin".equalsIgnoreCase(username)) {
+        if (username.toLowerCase().contains("admin")) {
             var adminRole = rolesRepository.findByAuthority("ADMIN");
             if (adminRole.isPresent()) {
                 authorities.add(adminRole.get());
@@ -80,7 +80,6 @@ public class AuthenticationService {
 
         return usersRepository.save(new Users(0, username, encodedPassword, authorities));
     }
-
     public LoginResponseDTO loginUser(String username, String password){
 
         try {
