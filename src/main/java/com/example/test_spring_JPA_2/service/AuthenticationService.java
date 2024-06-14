@@ -92,8 +92,32 @@ public class AuthenticationService {
 
      */
 
+    /*
     public LoginResponseDTO loginUser(String username, String password){
 
+        try {
+            String token = authRedisRepository.getJwtKey(username);
+            if (token != null) {
+                return new LoginResponseDTO(usersRepository.findByUsername(username).get(), token);
+            }
+
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(username, password)
+            );
+
+            token = tokenService.generateJwt(auth);
+
+            authRedisRepository.saveJwtKey(username, token);
+
+            return new LoginResponseDTO(usersRepository.findByUsername(username).get(), token);
+
+        } catch (AuthenticationException e) {
+            return new LoginResponseDTO(null, "");
+        }
+    }
+    */
+
+    public LoginResponseDTO loginUser(String username, String password){
         try {
             String token = authRedisRepository.getJwtKey(username);
             if (token != null) {
