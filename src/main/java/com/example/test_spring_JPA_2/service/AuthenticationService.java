@@ -3,7 +3,6 @@ package com.example.test_spring_JPA_2.service;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.example.test_spring_JPA_2.configuration.RedisUtil;
 import com.example.test_spring_JPA_2.repository.AuthRedisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,9 +36,6 @@ public class AuthenticationService {
 
     @Autowired
     private TokenService tokenService;
-
-    @Autowired
-    private RedisUtil redisUtil;
 
     @Autowired
     private AuthRedisRepository authRedisRepository;
