@@ -1,6 +1,5 @@
 package com.example.test_spring_JPA_2.service;
 
-import com.example.test_spring_JPA_2.model.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,8 +24,4 @@ public class UsersService implements UserDetailsService {
 
         return usersRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("user is not valid"));
     }
-
-//    public UserDetails findUserByUsername(String username) throws UsernameNotFoundException {
-//        return usersRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("user is not valid"));
-//    }
 }
