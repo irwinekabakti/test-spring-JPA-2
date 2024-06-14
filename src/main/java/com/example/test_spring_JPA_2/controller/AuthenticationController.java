@@ -1,6 +1,8 @@
 package com.example.test_spring_JPA_2.controller;
 
 import com.example.test_spring_JPA_2.util.CustomResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.http.HttpStatus;
@@ -37,7 +39,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-
+    /*
     public ResponseEntity<CustomResponse<LoginResponseDTO>> loginUser(@RequestBody RegistrationDTO body){
         try {
             LoginResponseDTO loginResponse = authenticationService.loginUser(body.getUsername(), body.getPassword());
@@ -56,6 +58,38 @@ public class AuthenticationController {
                     null
             );
             return errorResponse.toResponseEntity();
+        } catch (Exception e) {
+            CustomResponse<LoginResponseDTO> errorResponse = new CustomResponse<>(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error",
+                    "An unexpected error occurred",
+                    null
+            );
+            return errorResponse.toResponseEntity();
+        }
+    }
+    */
+
+    public ResponseEntity<CustomResponse<LoginResponseDTO>> loginUser(@RequestBody RegistrationDTO body, HttpServletResponse response) {
+        try {
+            LoginResponseDTO loginResponse = authenticationService.loginUser(body.getUsername(), body.getPassword());
+
+            if (loginResponse.getJwt() != null) {
+                Cookie cookie = new Cookie("jwt", loginResponse.getJwt());
+                cookie.setHttpOnly(true);
+                cookie.setSecure(true);
+                cookie.setPath("/");
+                cookie.setMaxAge(60 * 60);
+                response.addCookie(cookie);
+            }
+
+            CustomResponse<LoginResponseDTO> customResponse = new CustomResponse<>(
+                    HttpStatus.CREATED,
+                    "Success",
+                    "Login successful",
+                    loginResponse
+            );
+            return customResponse.toResponseEntity();
         } catch (Exception e) {
             CustomResponse<LoginResponseDTO> errorResponse = new CustomResponse<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
