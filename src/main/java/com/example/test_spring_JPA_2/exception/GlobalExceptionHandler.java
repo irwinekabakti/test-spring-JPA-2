@@ -26,4 +26,20 @@ public class GlobalExceptionHandler {
         CustomResponse<Object> response = new CustomResponse<>(HttpStatus.NOT_FOUND, "Not Found", ex.getMessage(), null);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(UsernameException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ResponseEntity<CustomResponse<Object>> handleUsernameNotFoundException(UsernameException ex) {
+        CustomResponse<Object> response = new CustomResponse<>(HttpStatus.UNAUTHORIZED, "Username Not Found", ex.getMessage(), null);
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(PasswordException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ResponseEntity<CustomResponse<Object>> handleIncorrectPasswordException(PasswordException ex) {
+        CustomResponse<Object> response = new CustomResponse<>(HttpStatus.UNAUTHORIZED, "Incorrect Password", ex.getMessage(), null);
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
 }

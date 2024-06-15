@@ -1,5 +1,8 @@
 package com.example.test_spring_JPA_2.controller;
 
+import com.example.test_spring_JPA_2.exception.PasswordException;
+import com.example.test_spring_JPA_2.exception.UsernameException;
+import com.example.test_spring_JPA_2.exception.AccountNotRegisteredException;
 import com.example.test_spring_JPA_2.helper.Claims;
 import com.example.test_spring_JPA_2.repository.BlacklistAuthRedisRepository;
 import com.example.test_spring_JPA_2.util.CustomResponse;
@@ -31,6 +34,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<CustomResponse<Users>> registerUser(@RequestBody RegistrationDTO body){
+        /*
         Users user = authenticationService.registerUser(body.getUsername(), body.getPassword());
         CustomResponse<Users> response = new CustomResponse<>(
                 HttpStatus.CREATED,
@@ -40,6 +44,26 @@ public class AuthenticationController {
         );
 
         return response.toResponseEntity();
+        */
+        try {
+            Users user = authenticationService.registerUser(body.getUsername(), body.getPassword());
+            CustomResponse<Users> response = new CustomResponse<>(
+                    HttpStatus.CREATED,
+                    "Success",
+                    "User registered successfully",
+                    user
+            );
+
+            return response.toResponseEntity();
+        } catch (UsernameException e) {
+            CustomResponse<Users> errorResponse = new CustomResponse<>(
+                    HttpStatus.BAD_REQUEST,
+                    "Error",
+                    "Username is already taken, please choose another one",
+                    null
+            );
+            return errorResponse.toResponseEntity();
+        }
     }
 
     @PostMapping("/login")
@@ -57,12 +81,36 @@ public class AuthenticationController {
             }
 
             CustomResponse<LoginResponseDTO> customResponse = new CustomResponse<>(
-                    HttpStatus.CREATED,
+                    HttpStatus.OK,
                     "Success",
                     "Login successful",
                     loginResponse
             );
             return customResponse.toResponseEntity();
+        } catch (PasswordException e) {
+            CustomResponse<LoginResponseDTO> errorResponse = new CustomResponse<>(
+                    HttpStatus.UNAUTHORIZED,
+                    "Error",
+                    "Password is incorrect",
+                    null
+            );
+            return errorResponse.toResponseEntity();
+        } catch (UsernameException e) {
+            CustomResponse<LoginResponseDTO> errorResponse = new CustomResponse<>(
+                    HttpStatus.UNAUTHORIZED,
+                    "Error",
+                    "Username is incorrect",
+                    null
+            );
+            return errorResponse.toResponseEntity();
+        } catch (AccountNotRegisteredException e) {
+            CustomResponse<LoginResponseDTO> errorResponse = new CustomResponse<>(
+                    HttpStatus.UNAUTHORIZED,
+                    "Error",
+                    "Account is not registered",
+                    null
+            );
+            return errorResponse.toResponseEntity();
         } catch (Exception e) {
             CustomResponse<LoginResponseDTO> errorResponse = new CustomResponse<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
