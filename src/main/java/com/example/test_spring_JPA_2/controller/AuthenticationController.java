@@ -1,5 +1,6 @@
 package com.example.test_spring_JPA_2.controller;
 
+import com.example.test_spring_JPA_2.helper.Claims;
 import com.example.test_spring_JPA_2.repository.BlacklistAuthRedisRepository;
 import com.example.test_spring_JPA_2.util.CustomResponse;
 import jakarta.servlet.http.Cookie;
@@ -10,15 +11,13 @@ import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.example.test_spring_JPA_2.model.Users;
 import com.example.test_spring_JPA_2.dto.LoginResponseDTO;
 import com.example.test_spring_JPA_2.dto.RegistrationDTO;
 import com.example.test_spring_JPA_2.service.AuthenticationService;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -96,6 +95,11 @@ public class AuthenticationController {
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
+    }
+
+    @GetMapping("/profile")
+    public Map<String, Object> getProfile() {
+        return Claims.getClaimsFromJwt();
     }
 
     private String extractJwtFromCookies(HttpServletRequest request) {
